@@ -18,7 +18,7 @@ Reviewed the public homepage, /about, and /contact-us on October 12, 2026. Inspe
 
 Preserved phone, address, published office hours, emergency-service availability, and the service categories. Updated the name to Ed’s Plumbing and Sewer Inc. as instructed. Chicago-wide coverage comes from the owner's brief. City examples illustrate this coverage; they are not claims of separate offices. No invented reviews, ratings, credentials, guarantees, company age, or veteran-owned status. Removed unsupported absolute drain-cleaning performance claims from the old site.
 
-The existing American flag asset was downloaded from the original site's public image host. The replacement wordmark uses text and CSS. Other graphics are CSS; there are no new stock-image licensing dependencies.
+The existing American flag asset was downloaded from the original site's public image host. The supplied company logo was restored with the built-in image-generation tool and integrated into the header and footer. It is a high-resolution raster reconstruction, not a vector or pixel-exact enlargement. Teal and charcoal now anchor the brand palette while the American flag remains. Other graphics use CSS; there are no new stock-image licensing dependencies.
 
 ## Launch and local SEO
 
