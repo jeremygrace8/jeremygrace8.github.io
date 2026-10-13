@@ -8,7 +8,7 @@ Deploy the contents of `dist/` to any static host. Directory-index routing must 
 
 To preview: `python3 -m http.server 8765 --directory dist`
 
-Edit page content in `build.py`, then run `python3 build.py`. Styles and the small mobile navigation script are maintained directly in `dist/style.css` and `dist/site.js`. Python uses only the standard library. Preserve those assets when rebuilding.
+Edit service content and SEO metadata in `build.py`, shared layouts and homepage sections in `design.py`, then run `python3 build.py`. Styles and the small mobile navigation script are maintained directly in `dist/style.css` and `dist/site.js`. Python uses only the standard library. Preserve those assets when rebuilding.
 
 Canonical URLs and sitemap entries target https://edsplumbingandhomerepairsinc.com. Change `BASE` in build.py and rebuild if the permanent domain changes. The Sites preview is private; it is not the production domain and will not replace the existing website automatically.
 
@@ -18,7 +18,7 @@ Reviewed the public homepage, /about, and /contact-us on October 12, 2026. Inspe
 
 Preserved phone, address, published office hours, emergency-service availability, and the service categories. Updated the name to Ed’s Plumbing and Sewer Inc. as instructed. Chicago-wide coverage comes from the owner's brief. City examples illustrate this coverage; they are not claims of separate offices. No invented reviews, ratings, credentials, guarantees, company age, or veteran-owned status. Removed unsupported absolute drain-cleaning performance claims from the old site.
 
-The existing American flag asset was downloaded from the original site's public image host. The supplied company logo was restored with the built-in image-generation tool and integrated into the header and footer. It is a high-resolution raster reconstruction, not a vector or pixel-exact enlargement. Teal and charcoal now anchor the brand palette while the American flag remains. Other graphics use CSS; there are no new stock-image licensing dependencies.
+The existing American flag asset was downloaded from the original site's public image host. The supplied company logo was restored with the built-in image-generation tool and integrated into the header and footer. It is a high-resolution raster reconstruction, not a vector or pixel-exact enlargement. Teal and charcoal now anchor the brand palette while the American flag remains. Five user-approved AI-generated interior images are used as illustrative stock imagery, including the commercial restroom with the open center stall. They are explicitly labeled as illustrations, not completed Ed’s projects. Original PNGs are retained separately; JPEG website derivatives are optimized for delivery. Service icons are original inline SVG artwork. No Carson text, branding, source code, or images were copied.
 
 ## Launch and local SEO
 
@@ -41,6 +41,16 @@ Sources:
 - https://developers.google.com/search/docs/essentials
 - https://support.google.com/business/answer/7091
 
+## Redesign direction
+
+The October 12 redesign uses https://carsonplumbinginc.com/ as a visual reference for a photograph-led plumbing site, spacious logo/navigation header, compact service overview, and straightforward service content. Ed’s has its own copy, teal palette, custom layout and service icons. The American flag is retained as a smaller footer accent. All existing service paths, metadata, sitemap, and structured business data are retained.
+
+The homepage gallery includes both bathrooms, the kitchen with dishwasher, the laundry room, and the final commercial restroom image. Navigation is manual, with previous/next buttons, five direct selection buttons, and arrow-key support. It does not auto-advance. No new commercial-service claims were added on the basis of the stock photograph.
+
 ## Verification
 
-The local server returned HTTP 200. Automated static checks verify all ten pages, internal links/assets, one H1 per content page, unique titles and descriptions, valid JSON-LD, sitemap coverage, and original URL preservation. Browser visual and interaction QA could not be completed because the in-app browser failed to attach. Mobile styling and accessible native FAQ disclosures are implemented but require a browser review before production launch.
+Static checks passed for all ten pages: internal links and assets, one H1 per content page, unique titles and descriptions, valid JSON-LD, sitemap coverage, and original URL preservation. The local HTTP server returned 200.
+
+Browser-reviewed desktop homepage, service overview, and plumbing detail page; mobile homepage and contact page at 390 pixels; narrow-mobile layout at 320 pixels. Confirmed no horizontal page overflow, gallery next/previous/direct selection, FAQ expansion, mobile menu navigation, and correct telephone destinations. Narrow-mobile header and headline sizing were refined after visual review. Desktop and mobile browser review is now completed, superseding the earlier browser-attachment limitation.
+
+No public-domain migration, Search Console submission, real-user Core Web Vitals measurement, or Google Business Profile changes were performed. The Sites deployment remains an owner-private preview.
