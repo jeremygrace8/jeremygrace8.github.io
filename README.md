@@ -41,3 +41,7 @@ See `LAUNCH.md` for domain migration, search setup, business-profile work and me
 Updated around the owner’s three offerings: residential plumbing, commercial plumbing and remodeling. The main page omits detailed service lists, the process section, the separate trust section, FAQs and form. Detailed service pages remain crawlable, and pricing/payment FAQs are on `/contact-us/#faq`. The footer and main navigation are also simplified.
 
 Design references supplied by the owner: https://carsonplumbinginc.com/ and https://www.riverfrontplumbing.com/. Used broad cues of strong interior imagery, clear service labels and direct contact access. No third-party copy, branding or images were reused.
+
+## About page video
+
+The About hero embeds the owner-supplied Vimeo video (792992602), retaining its unlisted access hash and display options. The responsive 16:9 player does not autoplay, supports fullscreen and picture-in-picture, and includes a direct-player fallback link. The privacy page describes the Vimeo connection. No video file is downloaded or hosted locally.
