@@ -1,6 +1,6 @@
 # Ed’s Plumbing & Sewer — static website
 
-Modern, responsive website rebuilt from https://www.thegreatestplumber.com/ on October 18, 2026. Fifteen crawlable content pages, eight focused service pages, and a homepage that brings services, coverage, emergency assistance, pricing policies, payment options and contact information together.
+Modern, responsive website rebuilt from https://www.thegreatestplumber.com/ on October 18, 2026. Sixteen crawlable content pages. The simplified homepage has four sections: a short introduction, three service categories, Chicagoland coverage and contact options. Residential plumbing, commercial plumbing and remodeling lead to dedicated pages; individual services, pricing, FAQs and the email inquiry form live on supporting pages.
 
 ## Files and editing
 
@@ -28,10 +28,16 @@ Canonical metadata targets **https://www.thegreatestplumber.com**, as requested.
 
 ## Verification
 
-All fifteen content pages pass local checks for unique titles and descriptions, one H1, valid JSON-LD syntax, local links and anchors, image alt text and dimensions, and sitemap coverage. JavaScript syntax was checked with Node. Local HTTP returned 200.
+All sixteen content pages pass local checks for unique titles and descriptions, one H1, valid JSON-LD syntax, local links and anchors, image alt text and dimensions, and sitemap coverage. JavaScript syntax was checked with Node. Local HTTP returned 200.
 
-Browser visual and interaction QA could not be completed: the browser tool’s URL security policy denied access to the local preview. Responsive layouts and accessible controls are implemented but browser-level behavior and measured Core Web Vitals still require a permitted browser review. No PageSpeed score or ranking improvement is claimed.
+Local browser visual QA was blocked by the browser tool’s URL policy. The deployed private preview can be reviewed in the connected browser. No measured Core Web Vitals score or ranking improvement is claimed.
 
 ## Public launch and traffic growth
 
 See `LAUNCH.md` for domain migration, search setup, business-profile work and measurement. Technical SEO helps search engines understand the site; rankings and traffic gains depend on launch, local competition, business relevance, distance, reputation and continued work.
+
+## Homepage simplification
+
+Updated around the owner’s three offerings: residential plumbing, commercial plumbing and remodeling. The main page omits detailed service lists, the process section, the separate trust section, FAQs and form. Detailed service pages remain crawlable, and pricing/payment FAQs are on `/contact-us/#faq`. The footer and main navigation are also simplified.
+
+Design references supplied by the owner: https://carsonplumbinginc.com/ and https://www.riverfrontplumbing.com/. Used broad cues of strong interior imagery, clear service labels and direct contact access. No third-party copy, branding or images were reused.
