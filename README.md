@@ -49,3 +49,7 @@ The About hero embeds the owner-supplied Vimeo video (792992602), retaining its 
 ## Emergency contact visibility
 
 The homepage starts with a prominent high-contrast emergency banner immediately beneath the navigation, showing 24/7 availability, Ed’s direct emergency number and a large click-to-call action. The persistent mobile bar also makes the emergency call the primary action and keeps routine service scheduling separate. The banner does not promise a response time.
+
+## Office phone pair
+
+Every visible business telephone listing is a labeled pair: Regular office (630) 663-1444 and Chicago office (773) 471-1444. These are the two office contacts specified by the owner and supersede the earlier mixed regional/direct listings. The pair is shared across the header, hero, emergency callouts, contact areas, service sidebars, 404 and persistent mobile bar. Both offices are also listed in business schema, applicable metadata, the emergency FAQ and the inquiry form fallback. Each number is an independent tap-to-call link. No separate street address or location-specific hours are inferred for the Chicago office.
