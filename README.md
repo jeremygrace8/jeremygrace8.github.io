@@ -45,3 +45,7 @@ Design references supplied by the owner: https://carsonplumbinginc.com/ and http
 ## About page video
 
 The About hero embeds the owner-supplied Vimeo video (792992602), retaining its unlisted access hash and display options. The responsive 16:9 player does not autoplay, supports fullscreen and picture-in-picture, and includes a direct-player fallback link. The privacy page describes the Vimeo connection. No video file is downloaded or hosted locally.
+
+## Emergency contact visibility
+
+The homepage starts with a prominent high-contrast emergency banner immediately beneath the navigation, showing 24/7 availability, Ed’s direct emergency number and a large click-to-call action. The persistent mobile bar also makes the emergency call the primary action and keeps routine service scheduling separate. The banner does not promise a response time.
