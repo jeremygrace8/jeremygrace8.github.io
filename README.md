@@ -1,6 +1,6 @@
 # Ed’s Plumbing & Sewer — static website
 
-Modern, responsive website rebuilt from https://www.thegreatestplumber.com/ on October 18, 2026. Sixteen crawlable content pages. The simplified homepage has four sections: a short introduction, three service categories, Chicagoland coverage and contact options. Residential plumbing, commercial plumbing and remodeling lead to dedicated pages; individual services, pricing, FAQs and the email inquiry form live on supporting pages.
+Modern, responsive website rebuilt from https://www.thegreatestplumber.com/ on October 18, 2026. Sixteen crawlable content pages. The homepage has a short introduction, three service categories and Chicagoland coverage. Contact us links lead to the dedicated contact page. Residential plumbing, commercial plumbing and remodeling lead to dedicated pages; individual services, pricing, FAQs and the email inquiry form live on supporting pages.
 
 ## Files and editing
 
