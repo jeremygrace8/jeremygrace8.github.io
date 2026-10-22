@@ -25,9 +25,9 @@ def officephones(variant='buttons'):
 EMERGENCY_DISPLAY='(630) 202-0050'
 EMERGENCY_TEL='tel:+16302020050'
 def emergencyphone(variant='text'):
- if variant=='banner':return f'<a class="emergency-call" href="{EMERGENCY_TEL}"><span>Call Ed now · 24/7 emergency</span><strong>{EMERGENCY_DISPLAY}</strong>{icon("arrow")}</a>'
- if variant=='button':return f'<a class="btn emergency-direct" href="{EMERGENCY_TEL}"><span>Call Ed directly<strong>{EMERGENCY_DISPLAY}</strong></span>{icon("phone")}</a>'
- if variant=='mobile':return f'<a class="mobile-emergency-link" href="{EMERGENCY_TEL}"><span>24/7 emergency</span><strong>{EMERGENCY_DISPLAY}</strong></a>'
+ if variant=='banner':return f'<a class="emergency-call" href="{EMERGENCY_TEL}"><span>24/7 EMERGENCY</span><strong>{EMERGENCY_DISPLAY}</strong>{icon("arrow")}</a>'
+ if variant=='button':return f'<a class="btn emergency-direct" href="{EMERGENCY_TEL}"><span>24/7 EMERGENCY<strong>{EMERGENCY_DISPLAY}</strong></span>{icon("phone")}</a>'
+ if variant=='mobile':return f'<a class="mobile-emergency-link" href="{EMERGENCY_TEL}"><span>24/7 EMERGENCY</span><strong>{EMERGENCY_DISPLAY}</strong></a>'
  return f'<a class="emergency-phone" href="{EMERGENCY_TEL}" aria-label="24/7 emergency: {EMERGENCY_DISPLAY}">{EMERGENCY_DISPLAY}</a>'
 def btn(label,href,secondary=False,phone=False):
  if href==EMERGENCY_TEL:return emergencyphone('button')
