@@ -1,6 +1,63 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.sample
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+credentials*.json
+service-account*.json
 
-__pycache__/
-*.pyc
+# Local publishing and workspace configuration
+/.openai/
+/.codex/
+/.agents/
+/.sites-checkout/
+/.sites-checkout-*/
+/.sites-runtime/
+/AGENTS.md
+/LAUNCH.md
+/design.py
+/scripts/prepare_sites.py
 
-# Generated compatibility copy for the private Sites preview.
+# Generated output and local artifacts; docs/ is the published website
 /out/
+/dist/
+/output/
+/tmp/
+/temp/
+/screenshots/
+/coverage/
+/*.tar
+/*.tar.gz
+/*.tgz
+/*.zip
+
+# Dependencies and Python caches
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor, operating-system, log and temporary files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+.history/
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
