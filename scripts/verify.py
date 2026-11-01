@@ -16,7 +16,7 @@ class Doc(HTMLParser):
   if self.in_title:self.title+=data
   if self.ld:self.script+=data
  def all(self,tag):return [a for t,a in self.tags if t==tag]
-root=Path(__file__).resolve().parents[1]/'dist'
+root=Path(__file__).resolve().parents[1]/'docs'
 errors=[];titles=[];descriptions=[];count=0;docs={p:Doc(p.read_text()) for p in root.rglob('*.html')}
 for path,soup in docs.items():
  rel=path.relative_to(root)

@@ -4,15 +4,15 @@ Modern, responsive website rebuilt from https://www.thegreatestplumber.com/ on O
 
 ## Files and editing
 
-- `dist/` is the deployable static website; upload its contents to the final host.
+- `docs/` is the deployable static website; upload its contents to the final host.
 - `build.py` generates all HTML, schema, sitemap and legacy URL mappings. Python standard library only.
-- `dist/assets/site.css` and `dist/assets/site.js` contain shared styles and interactions. No framework, external fonts, CDN or runtime dependency.
+- `docs/assets/site.css` and `docs/assets/site.js` contain shared styles and interactions. No framework, external fonts, CDN or runtime dependency.
 - `scripts/verify.py` checks page structure, metadata, local links, anchors, images, JSON-LD syntax and sitemap coverage. Standard library only.
 - All five supplied interior images are included as optimized responsive WebP derivatives. The supplied logo is retained. Interior photos are presented as stock illustrations, not completed jobs.
 
-Run `python3 build.py`, then `python3 scripts/verify.py`. Preview with `python3 -m http.server 8765 --directory dist`.
+Run `python3 build.py`, then `python3 scripts/verify.py`. Preview with `python3 -m http.server 8765 --directory docs`.
 
-The old `design.py`, `dist/style.css`, `dist/site.js` and legacy image directory are retained from the previous version for reference; the new site does not load them. Only `build.py` is used to regenerate the new pages.
+The old `design.py`, `docs/style.css`, `docs/site.js` and legacy image directory are retained from the previous version for reference; the new site does not load them. Only `build.py` is used to regenerate the new pages.
 
 ## Contact behavior
 
@@ -62,3 +62,13 @@ These supersede the previous Darien/Chicago office pair and the earlier emergenc
 ## Current contact email
 
 All visible email addresses, mailto links, the inquiry-email recipient and fallback, privacy contact and business schema use `contact@thegreatestplumber.com`.
+
+## GitHub Pages external testing
+
+The generated site is in `docs/`, including an empty `.nojekyll` file so GitHub serves the static output without a Jekyll build. Rebuilding preserves that marker.
+
+After pushing to the existing `github` remote, open the repository’s **Settings → Pages**, select **Deploy from a branch**, choose **main** and **/docs**, then click **Save**.
+
+This repository is `jeremygrace8/jeremygrace8.github.io`, so the testing URL is `https://jeremygrace8.github.io/` and the site’s root-relative links work unchanged. A project repository published under `/repository-name/` would require path adjustments. A directory rename does not enable GitHub Pages automatically.
+
+Canonical URLs and the XML sitemap continue to target the intended production domain, `https://www.thegreatestplumber.com`. GitHub Pages is an external testing copy. `_redirects` and `.htaccess` are retained for compatible production hosts; GitHub Pages does not apply those host-specific redirect rules.

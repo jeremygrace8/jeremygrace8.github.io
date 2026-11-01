@@ -1,7 +1,7 @@
 from pathlib import Path
 import json,html
 from datetime import date
-D=Path(__file__).parent/'dist'; BASE='https://www.thegreatestplumber.com'
+D=Path(__file__).parent/'docs'; BASE='https://www.thegreatestplumber.com'
 esc=html.escape
 TOWNS=['Chicago','Darien','Burr Ridge','La Grange','Elmhurst','Downers Grove','Woodridge','Hinsdale','Orland Park','Joliet','Bolingbrook','Naperville']
 paths={
@@ -103,4 +103,6 @@ redirects={'fixturereplace.shtml':'/home-repairs-remodeling/','applianceinstalla
 # Portable fallback for hosts that do not support native redirect configuration.
 for old,new in redirects.items():
  (D/old).write_text(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url={new}"><link rel="canonical" href="{BASE+new}"><title>Page moved | Ed’s Plumbing</title></head><body><p>This page has moved. <a href="{new}">Continue to Ed’s Plumbing &amp; Sewer</a>.</p></body></html>')
+# Serve generated static files directly when publishing /docs with GitHub Pages.
+(D/'.nojekyll').touch()
 print(f'Generated {len(PAGES)} content pages, 404, sitemap, robots and {len(redirects)} legacy URL mappings.')
