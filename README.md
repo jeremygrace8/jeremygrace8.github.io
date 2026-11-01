@@ -22,7 +22,7 @@ Calls use `tel:` links. The service inquiry form prepares an email in the visito
 
 Reviewed the original homepage and service pages for drains, sewer backups, low pressure, water heaters, tankless heaters, leaks, sump/ejector pumps, commercial/industrial plumbing, utility rooms, major installations and HVAC. Also reviewed contact, service areas, licensing, employees, scheduling, appointments, payments and Why Dig. Fixture and appliance detail pages did not load in the web reader, so their service categories are retained from the homepage navigation rather than adding unsupported detail.
 
-The source states 40+ years of experience; licensed, bonded and insured; flat-rate pricing; 24/7 emergency service; extended hours; no Saturday overtime rate; a dispatch fee credited toward work; and cash, checks and major credit cards accepted. Contact numbers and emails are copied from the original contact page. Confirm these policies remain current before a public launch. No invented reviews, ratings, project photographs, street address, license numbers, precise response-time promises or regular office hours are included. Omitted dated $35 offers, federal tax-credit claims, and model-specific tankless warranties/lifespans.
+The source states 40+ years of experience; licensed, bonded and insured; flat-rate pricing; 24/7 emergency service; extended hours; no Saturday overtime rate; a dispatch fee credited toward work; and cash, checks and major credit cards accepted. Emails are copied from the original contact page; phone numbers use the owner’s latest instructions below. Confirm these policies remain current before a public launch. No invented reviews, ratings, project photographs, street address, license numbers, precise response-time promises or regular office hours are included. Omitted dated $35 offers, federal tax-credit claims, and model-specific tankless warranties/lifespans.
 
 Canonical metadata targets **https://www.thegreatestplumber.com**, as requested. The private Sites preview is a review environment. It does not replace the public domain automatically. Preserve owner-private access until launch.
 
@@ -50,10 +50,11 @@ The About hero embeds the owner-supplied Vimeo video (792992602), retaining its 
 
 The homepage starts with a prominent high-contrast emergency banner immediately beneath the navigation, showing 24/7 availability, Ed’s direct emergency number and a large click-to-call action. The persistent mobile bar also makes the emergency call the primary action and keeps routine service scheduling separate. The banner does not promise a response time.
 
-## Office phone pair
+## Current phone numbers
 
-Every visible business telephone listing is a labeled pair: Darien office (630) 663-1444 and Chicago office (773) 471-1444. These are the two office contacts specified by the owner and supersede the earlier mixed regional/direct listings. The pair is shared across the header, hero, emergency callouts, contact areas, service sidebars, 404 and persistent mobile bar. Both offices are also listed in business schema, applicable metadata, the emergency FAQ and the inquiry form fallback. Each number is an independent tap-to-call link. No separate street address or location-specific hours are inferred for the Chicago office.
+The owner specifies one regular contact and one dedicated emergency contact:
 
-## Dedicated emergency line
+- Chicagoland: (630) 202-0050, `tel:+16302020050`.
+- Emergency: (773) 471-1444, `tel:+17734711444`.
 
-The owner clarified that emergency calls must continue to use Ed’s direct number, (630) 202-0050. Emergency banners, callouts, FAQs, schema and the persistent mobile emergency button use that dedicated line. Other business phone listings remain paired: Darien office (630) 663-1444 and Chicago office (773) 471-1444. The mobile bar separates the emergency action from the two office choices. This clarification supersedes the earlier emergency-to-office pairing.
+These supersede the previous Darien/Chicago office pair and the earlier emergency assignment. Shared call buttons, the header, service areas, sidebars, contact page, emergency FAQ, mobile bar, metadata, business schema, 404 and email-form fallback use these roles consistently. No office address or location-specific hours are inferred from either number.
