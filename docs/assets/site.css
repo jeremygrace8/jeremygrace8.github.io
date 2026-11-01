@@ -30,15 +30,15 @@
 
 .mobile-office-bar .mobile-emergency-link:hover{background:#aa3923}
 
-/* Keep the contact sidebar separate from the full-width service area. */
+
 .service-detail-section .detail-aside{position:static}
-/* Keep service-area spacing compact and balanced on every page. */
+
 .area-section{padding-top:44px;padding-bottom:44px}
 @media(max-width:760px){.area-section{padding-top:30px;padding-bottom:30px}}
-/* Balance the centered footer information between the logo and flag. */
+
 .compact-footer-row{grid-template-columns:256px minmax(0,1fr) 256px;gap:28px}.footer-flag{display:block;width:200px;max-width:100%;justify-self:end}.footer-flag img{display:block;width:100%;height:auto}
 @media(max-width:1100px){.compact-footer-row{grid-template-columns:216px minmax(0,1fr) 216px;gap:24px}.footer-flag{width:180px}}
 @media(max-width:760px){.compact-footer-row{grid-template-columns:minmax(0,1fr);gap:22px}.compact-footer-row .footer-logo{grid-column:1;grid-row:1;max-width:100%}.footer-information{grid-column:1;grid-row:2}.footer-flag{display:none}}
-/* One Chicagoland number for routine service, with a separate emergency action. */
+
 .office-phones--buttons{width:210px;grid-template-columns:minmax(0,1fr)}.office-phones--text{max-width:210px;grid-template-columns:minmax(0,1fr)}
 @media(max-width:760px){.office-phones--mobile{grid-template-columns:minmax(0,1fr)}.mobile-office-bar .office-phone{flex-direction:row;justify-content:space-between;padding:7px 10px}.office-phones--mobile .office-phone-label{font-size:12px}.office-phones--mobile .office-phone strong{font-size:17px}}

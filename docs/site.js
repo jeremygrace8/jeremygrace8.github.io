@@ -15,5 +15,4 @@ if(gallery){
  gallery.querySelector('.slide-next').addEventListener('click',()=>show(active+1));
  dots.forEach((dot,i)=>dot.addEventListener('click',()=>show(i)));
  gallery.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();show(active+(e.key==='ArrowRight'?1:-1))}});
- // Intentionally manual: no motion or slide changes while a visitor is reading.
 }
