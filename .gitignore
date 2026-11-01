@@ -24,6 +24,7 @@ service-account*.json
 /LAUNCH.md
 /design.py
 /scripts/prepare_sites.py
+/docs/eds-logo-hd.png
 
 # Generated output and local artifacts; docs/ is the published website
 /out/
