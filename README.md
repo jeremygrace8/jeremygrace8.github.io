@@ -72,3 +72,7 @@ After pushing to the existing `github` remote, open the repository’s **Setting
 This repository is `jeremygrace8/jeremygrace8.github.io`, so the testing URL is `https://jeremygrace8.github.io/` and the site’s root-relative links work unchanged. A project repository published under `/repository-name/` would require path adjustments. A directory rename does not enable GitHub Pages automatically.
 
 Canonical URLs and the XML sitemap continue to target the intended production domain, `https://www.thegreatestplumber.com`. GitHub Pages is an external testing copy. `_redirects` and `.htaccess` are retained for compatible production hosts; GitHub Pages does not apply those host-specific redirect rules.
+
+## Private Sites preview packaging
+
+`docs/` is the authoritative deployable website and the GitHub Pages publishing folder. The existing Sites host accepts only certain output-directory names, so its manifest points to an ignored generated `out/` copy. Run `python3 scripts/prepare_sites.py` after building to refresh that copy for Sites packaging. Do not edit `out/`; it is regenerated from `docs/` and is not committed or needed by GitHub Pages.

@@ -1,3 +1,6 @@
 
 __pycache__/
 *.pyc
+
+# Generated compatibility copy for the private Sites preview.
+/out/
