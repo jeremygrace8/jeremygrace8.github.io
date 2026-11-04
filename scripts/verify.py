@@ -17,7 +17,7 @@ class Doc(HTMLParser):
   if self.ld:self.script+=data
  def all(self,tag):return [a for t,a in self.tags if t==tag]
 root=Path(__file__).resolve().parents[1]/'docs'
-errors=[];titles=[];descriptions=[];count=0;docs={p:Doc(p.read_text()) for p in root.rglob('*.html')}
+errors=[];titles=[];descriptions=[];indexable=[];count=0;docs={p:Doc(p.read_text()) for p in root.rglob('*.html')}
 for path,soup in docs.items():
  rel=path.relative_to(root)
  if path.name=='404.html':continue
@@ -26,7 +26,9 @@ for path,soup in docs.items():
  meta={t.get('name'):t.get('content') for t in soup.all('meta')}
  titles.append(soup.title);descriptions.append(meta['description'])
  assert soup.all('html')[0].get('lang')=='en'
- assert next(a['href'] for a in soup.all('link') if a.get('rel')=='canonical').startswith('https://www.thegreatestplumber.com/')
+ canonical=next(a['href'] for a in soup.all('link') if a.get('rel')=='canonical')
+ assert canonical.startswith('https://www.thegreatestplumber.com/')
+ if 'noindex' not in meta.get('robots',''):indexable.append(canonical)
  assert 'viewport' in meta
  for data in soup.json:
   for item in data:assert '@type' in item
@@ -47,6 +49,7 @@ for path,soup in docs.items():
 assert len(set(titles))==len(titles),'duplicate titles'
 assert len(set(descriptions))==len(descriptions),'duplicate descriptions'
 urls=[x.text for x in ET.parse(root/'sitemap.xml').iter() if x.tag.endswith('loc')]
-assert len(urls)==count,(len(urls),count)
+assert len(urls)==len(indexable),(len(urls),len(indexable))
+assert set(urls)==set(indexable),'sitemap must contain every indexable page and exclude noindex pages'
 assert not errors,'\n'.join(errors)
 print(f'PASS: {count} pages; unique metadata; internal links and anchors; image alt text and dimensions; JSON-LD; sitemap coverage.')
