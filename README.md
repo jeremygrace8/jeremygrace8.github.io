@@ -68,6 +68,10 @@ The public testing URL is https://jeremygrace8.github.io/. Canonical URLs and th
 
 The separate Sites publishing checkout receives the same source and generated files; its preparation script copies `docs/` into `out/`. Local private publishing configuration is not needed for GitHub Pages.
 
+## Brand colors
+
+The website uses Logo 7 Teal, stored permanently in `src/static/assets/logo-teal.webp`. Its pixel content matches the selected logo. The palette uses teal `#07af9e`, darker teal `#087b70` for readable buttons and small text, deep teal `#073b3a` for dark sections, and pale teal backgrounds. Emergency calls retain their red styling.
+
 ## Contact behavior
 
 - Chicagoland: (630) 663-1444
