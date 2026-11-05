@@ -13,6 +13,7 @@ Edit the files in `src/`. The build reads these files and writes the finished we
 | Navigation and top utility bar | `src/partials/header.html` |
 | Footer and fixed mobile phone buttons | `src/partials/footer.html` |
 | Shared emergency section | `src/partials/emergency.html` |
+| Shared pricing heading and proposal wording | `src/partials/pricing.html` |
 | Service-area section shared by service pages | `src/partials/service-area.html` |
 | Homepage service-area wording | `src/pages/index.html` |
 | Main styles and interactive behavior | `src/static/assets/site.css` and `src/static/assets/site.js` |
