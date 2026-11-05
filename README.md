@@ -70,7 +70,7 @@ The separate Sites publishing checkout receives the same source and generated fi
 
 ## Brand colors
 
-The website uses Logo 7 Teal, stored permanently in `src/static/assets/logo-teal.webp`. Its pixel content matches the selected logo. The palette uses teal `#07af9e`, darker teal `#087b70` for readable buttons and small text, deep teal `#073b3a` for dark sections, and pale teal backgrounds. Emergency calls retain their red styling.
+The website uses Logo 7 Teal, stored permanently in `src/static/assets/logo-teal.webp`. Its pixel content matches the selected logo. Buttons, the top utility bar, footer and decorative accents use the logo’s exact teal, `#07af9e`. Charcoal `#252b28` keeps button labels and body text readable, with pale teal backgrounds for supporting sections. Emergency calls retain their red styling.
 
 ## Contact behavior
 
