@@ -1,110 +1,149 @@
+from argparse import ArgumentParser
+import hashlib
+import json
 from pathlib import Path
-import json,html
-from datetime import date
-from logo_review import build_logo_review
-D=Path(__file__).parent/'docs'; BASE='https://www.thegreatestplumber.com'
-esc=html.escape
-TOWNS=['Chicago','Darien','Burr Ridge','La Grange','Elmhurst','Downers Grove','Woodridge','Hinsdale','Orland Park','Joliet','Bolingbrook','Naperville']
-paths={
-'arrow':'<path d="M4 12h16m-6-6 6 6-6 6"/>',
-'phone':'<path d="m5 3 4 1 1 5-3 2a14 14 0 0 0 6 6l2-3 5 1 1 4c-1 6-10 2-14-2S0 4 5 3Z"/>',
-'check':'<path d="m5 12 4 4L19 6"/><circle cx="12" cy="12" r="10"/>',
-'shield':'<path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6Z"/><path d="m8 12 3 3 5-6"/>',
-'clock':'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-'clean':'<path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5Z"/>',
-'pipe':'<path d="M5 2v12a5 5 0 0 0 5 5h12M11 2v10a1 1 0 0 0 1 1h10M2 2h12M22 10v12M3 7h10"/>',
-'water':'<rect x="6" y="4" width="12" height="17" rx="3"/><path d="M9 1v3m6-3v3M9 21v2m6-2v2M9 8h6m-4 3-2 4h4l-2 4"/>',
-'drop':'<path d="M12 2S4 11 4 15a8 8 0 0 0 16 0c0-4-8-13-8-13Z"/><path d="M8 15a4 4 0 0 0 4 4"/>',
-'pump':'<path d="M2 8v14h20V8M5 14h14M9 14V9h6v5M12 9V2h7v5M5 18q2-2 4 0t4 0t4 0"/>',
-'home':'<path d="m2 11 10-9 10 9M5 9v13h14V9M10 22v-7h5v7M9 8h6v4H9Z"/>',
-'building':'<path d="M4 22V3h16v19M2 22h20M9 22v-5h6v5M8 7h2m4 0h2M8 11h2m4 0h2"/>'}
-def icon(name,cls=''):
- return f'<svg class="{cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{paths.get(name,paths["arrow"])}</svg>'
-OFFICE_NUMBERS=[('Chicagoland','(630) 202-0050','+16302020050')]
-def officephones(variant='buttons'):
- return f'<div class="office-phones office-phones--{variant}" aria-label="Chicagoland phone number">'+''.join(f'<a class="office-phone" href="tel:{number}"><span class="office-phone-label">{label}</span><strong>{display}</strong></a>' for label,display,number in OFFICE_NUMBERS)+'</div>'
-EMERGENCY_DISPLAY='(773) 471-1444'
-EMERGENCY_TEL='tel:+17734711444'
-def emergencyphone(variant='text'):
- if variant in ('banner','button'):return f'<a class="emergency-call" href="{EMERGENCY_TEL}"><span>24/7 EMERGENCY</span><strong>{EMERGENCY_DISPLAY}</strong>{icon("arrow")}</a>'
- if variant=='mobile':return f'<a class="mobile-emergency-link" href="{EMERGENCY_TEL}"><span>24/7 EMERGENCY</span><strong>{EMERGENCY_DISPLAY}</strong></a>'
- return f'<a class="emergency-phone" href="{EMERGENCY_TEL}" aria-label="24/7 emergency: {EMERGENCY_DISPLAY}">{EMERGENCY_DISPLAY}</a>'
-def btn(label,href,secondary=False,phone=False):
- if href==EMERGENCY_TEL:return emergencyphone('button')
- if href.startswith('tel:'):return officephones('buttons')
- return f'<a class="btn{" secondary" if secondary else ""}" href="{href}">{icon("phone") if phone else ""}{label}{"" if phone else icon("arrow")}</a>'
-def link(label,href):
- if href.startswith('tel:'):return officephones('text')
- return f'<a class="text-link" href="{href}">{label}{icon("arrow")}</a>'
-def image(name,alt,cls='',lazy=True):
- return f'<img class="{cls}" src="/assets/{name}-1200.webp" srcset="/assets/{name}-640.webp 640w, /assets/{name}-1200.webp 1200w, /assets/{name}-1536.webp 1536w" sizes="(max-width:760px) 100vw, 50vw" width="1536" height="1024" alt="{alt}" {"loading=lazy" if lazy else "fetchpriority=high"} decoding="async">'
-SERVICES=[
- dict(slug='drain-sewer-cleaning',name='Drain & sewer cleaning',short='Slow drains and sewer backups, sorted.',desc='Rodding, hydro-jetting and video inspections to find the problem and get things flowing again.',icon='pipe',image='kitchen',alt='Bright kitchen with a sink, island and dishwasher',title='Drain Cleaning & Sewer Repair in Chicagoland',intro='A slow kitchen sink or a backed-up sewer can interrupt your whole day. Ed’s Plumbing & Sewer diagnoses the cause and explains your options for getting things flowing again.',heading='Find the cause. Clear the way.',body='Ed’s uses rodding and hydro-jetting equipment to clean drains and sewer lines. Video inspection helps locate the source of a blockage so repairs can be planned around the actual condition of the pipe.',items=['Kitchen sinks, toilets, tubs and showers','Laundry sinks and floor drains','Sewer rodding and hydro-jetting','Video sewer inspections and precision repairs'],extra='Ask about sewer rehabilitation',extra_body='Where the condition of the pipe allows, sewer relining may offer an alternative to excavation. Ed’s can discuss whether rehabilitation is suitable for your sewer; some problems still require digging.',source='drainproblems.shtml'),
- dict(slug='water-heaters',name='Water heaters',short='Hot water. Back in your routine.',desc='Professional service and replacement for traditional water heaters, plus tankless installation options.',icon='water',image='laundry-room',alt='Laundry and utility room with a sink and washing machines',title='Water Heater Repair & Replacement in Chicagoland',intro='No hot water? Ed’s services and replaces water heaters throughout Chicagoland, helping you choose the next step for your home and your hot-water needs.',heading='Comfort starts with reliable hot water.',body='A water heater needs the right installation, connections and setup. Ed’s can assess your current unit, discuss repair or replacement, and handle installation with attention to local requirements.',items=['Water heater diagnosis and service','Traditional tank water heater replacement','Tankless water heater options','Professional installation and connections'],extra='Thinking about going tankless?',extra_body='Tankless heaters provide hot water on demand and take up less floor space than a traditional storage tank. The right choice depends on your household’s demand and existing connections. Ask our team about sizing, installation and maintenance before choosing a system.',source='waterheaters.shtml'),
- dict(slug='plumbing-repairs',name='Leaks & plumbing repairs',short='Small drips deserve expert attention.',desc='Leak detection, low water pressure, faucets, toilets and everyday plumbing repairs around your home.',icon='drop',image='bathroom-02',alt='Bathroom with a double vanity, bathtub and glass shower',title='Leak Detection & Plumbing Repairs in Chicagoland',intro='From a persistent drip to low water pressure, Ed’s looks beyond the symptom to understand what your plumbing needs. Get clear advice before a repair begins.',heading='A thoughtful fix for everyday problems.',body='Ed’s locates water and sewer leaks, investigates the cause and explains the proposed repair, cost and applicable guarantee before proceeding with your approval. The team also helps with low-pressure problems around the home.',items=['Water and sewer leak detection and repair','Low water pressure diagnosis','Faucet, sink and toilet replacement','Fixture installation and plumbing connections'],extra='Know what happens next',extra_body='Describe where you see the problem, when it started and whether more than one fixture is affected. Ed’s will discuss the appropriate next step and arrange a visit. For an urgent leak, call the emergency line directly.',source='leaks.shtml'),
- dict(slug='sump-pumps',name='Sump & ejector pumps',short='Help keep your basement protected.',desc='Sump pumps, sewage ejectors, alarms and battery backup systems for greater peace of mind.',icon='pump',image='laundry-room',alt='Clean utility room with laundry appliances and a sink',title='Sump Pump & Ejector Pump Service in Chicagoland',intro='Your basement relies on equipment that works when it is needed. Ed’s installs sump pumps, ejector pumps, alarms and battery backup systems across Chicagoland.',heading='Be ready before the next heavy rain.',body='Whether your existing pump needs attention or you want to discuss a backup system, Ed’s can review your equipment and recommend a suitable service or replacement. Ask about checking pumps as part of seasonal plumbing maintenance.',items=['Sump pump service and installation','Sewage ejector pump replacement','Battery backup systems','Pump alarms and seasonal inspections'],extra='Plan a seasonal check',extra_body='A plumbing visit can include a review of your sump pump, water heater, drains and sewer before cold weather. Tell Ed’s about any recent flooding, unusual pump behavior or concerns with your backup system when you call.',source='sumppump.shtml'),
- dict(slug='home-repairs-remodeling',name='Remodeling',short='Bring your next project to life.',desc='Remodeling for kitchens, bathrooms, basements and additions, from a single room to a larger renovation.',icon='home',image='bathroom-01',alt='Warm modern bathroom with wood vanity and freestanding bathtub',title='Home Remodeling in Chicagoland',intro='A refreshed kitchen, a new bathroom or a bigger change at home. Ed’s handles remodeling projects across Chicagoland, with an experienced team to discuss your plans and the work ahead.',heading='Your plans. Our experience.',body='From a single room to a larger renovation, talk with Ed’s about the space you want to create. We work on kitchens, bathrooms, basements and additions, and can discuss the scope, plumbing and installations your project requires.',items=['Kitchen remodeling','Bathroom remodeling','Basement renovations','Room additions and major installations'],extra='Let’s talk about your project',extra_body='Tell us what you want to change, the space you have and your priorities. We’ll discuss the scope of the work, a quote and scheduling. Our plumbing services also cover fixture upgrades and appliance connections as part of your project.',source='majorinstallations.shtml'),
- dict(slug='commercial-plumbing',name='Commercial plumbing',short='Keep your business moving.',desc='Plumbing and sewer support for commercial and industrial properties, with preventive maintenance options.',icon='building',image='commercial-restroom-v4',alt='Commercial restroom with sinks and restroom stalls',title='Commercial & Industrial Plumbing in Chicagoland',intro='Plumbing problems can disrupt employees, customers and daily operations. Ed’s provides plumbing and sewer service for commercial and industrial properties across metropolitan Chicago.',heading='Practical support for your property.',body='Ed’s brings experienced technicians and equipment to commercial plumbing and sewer work. Explain the issue, the type of property and any access considerations when you call to discuss service.',items=['Commercial and industrial plumbing repairs','Drain and sewer service','Fixture and plumbing installations','Preventive maintenance programs'],extra='Ask about preventive maintenance',extra_body='A maintenance program can help you plan attention to the plumbing your business depends on. Call to discuss your property, recurring concerns and the maintenance options available for your systems.',source='commercialIndustrial.shtml'),
- dict(slug='utility-rooms',name='Utility rooms & appliance hookups',short='One place. Many essential systems.',desc='Service for utility-room plumbing, laundry sinks, appliance connections and related equipment.',icon='home',image='laundry-room',alt='Laundry room with a farmhouse sink, washer and dryer',title='Utility Room Plumbing & Appliance Hookups in Chicagoland',intro='Laundry and utility rooms bring together many of your home’s essential systems. Ed’s can help with plumbing service, replacements and appliance hookups.',heading='Give hardworking systems the care they need.',body='Call our team about water heaters, laundry tubs, sump and ejector pumps, battery backups, washing machine and dryer connections, and utility-room equipment.',items=['Laundry sinks and tubs','Washing machine and dryer hookups','Water heaters and pump systems','Utility-room plumbing upgrades'],extra='Planning to replace an appliance?',extra_body='Discuss your new equipment and the existing hookups with Ed’s before installation. The team can explain what plumbing work may be needed and arrange the next step.',source='utilityrooms.shtml'),
- dict(slug='heating-cooling',name='Furnaces, boilers & HVAC',short='Comfort for every season.',desc='Ask about service for furnaces, boilers, air conditioners and heat pumps.',icon='clean',image='laundry-room',alt='Modern home laundry and utility space',title='Furnace, Boiler & HVAC Service in Chicagoland',intro='Ed’s also offers service for heating and cooling equipment. Call to discuss your furnace, boiler, air conditioner or heat pump and arrange an appointment.',heading='Help with your home’s comfort systems.',body='Ed’s provides all-brand heating and cooling support, high-efficiency air conditioners, furnaces, boilers and heat pumps. Describe your equipment and the issue when you call.',items=['Furnace service','Boiler service','Air conditioning systems','Heat pumps'],extra='Discuss your options',extra_body='If you are considering replacement equipment, ask about the systems suitable for your home and the terms of any applicable warranty. Pricing and availability can be discussed directly with Ed’s.',source='furnacesHVAC.shtml')]
-FAQ=[('Do you offer 24/7 emergency plumbing service?','Yes. For emergency plumbing or sewer service, call our emergency line at (773) 471-1444, any time of day or night. Describe the issue and confirm dispatch availability.'),('Which areas do you serve?','Ed’s serves the metropolitan Chicago area, including Darien, Hinsdale, Naperville, Bolingbrook, Joliet, Orland Park, Burr Ridge, La Grange, Elmhurst, Downers Grove and Woodridge. Call with your address to arrange service.'),('How does your pricing work?','Ed’s offers flat-rate pricing. A dispatch fee applies and is credited toward the work performed. The proposed work and cost are explained before you approve the repair. Call for the current fee and an estimate.'),('Is there an extra charge on Saturdays?','There is no overtime rate for Saturdays. Extended service hours are available; call to discuss scheduling and the cost for your visit.'),('What payment methods do you accept?','Ed’s accepts cash, checks, Visa, Mastercard, American Express and Discover. Payment is due when service is performed.'),('Are you licensed and insured?','Ed’s Plumbing & Sewer is licensed, bonded and insured. Ask the team for current credentials or details relevant to your project when arranging service.')]
-def faq(items=FAQ):return '<div class="faq-list">'+''.join(f'<details><summary>{q}</summary><p>{a}</p></details>' for q,a in items)+'</div>'
-def cards(all=False):
- return '<div class="service-grid">'+''.join(f'<a class="service-card" href="/{s["slug"]}/">{icon(s["icon"],"service-icon")}<h3>{s["name"]}</h3><p>{s["desc"]}</p><span class="text-link">Explore service{icon("arrow")}</span></a>' for s in (SERVICES if all else SERVICES[:6]))+'</div>'
-def emergency():return emergencybanner()
-def contact():return f'''<section class="section contact-section" id="contact"><div class="wrap contact-grid"><div class="contact-copy"><p class="eyebrow">LET’S GET IT TAKEN CARE OF</p><h2>A real person.<br>A practical solution.</h2><p>Tell us what’s happening and where you’re located.<br>We’ll help you arrange the next step.</p><span class="mini-label">CALL TO SCHEDULE SERVICE</span>{officephones('contact')}<a class="email" href="mailto:contact@thegreatestplumber.com">contact@thegreatestplumber.com</a><p class="area-note">Emergency? Call our emergency line, 24/7: {emergencyphone()}<br>You can also email <a href="mailto:contact@thegreatestplumber.com">contact@thegreatestplumber.com</a>.</p></div><div class="contact-panel"><h3>Start a service inquiry</h3><p>Prefer email? Fill in your details to prepare a request in your email app.</p><form id="service-request"><div class="field-row"><label>Your name<input name="name" autocomplete="name" maxlength="100" required placeholder="Full name"></label><label>Phone number<input name="phone" type="tel" autocomplete="tel" maxlength="40" required placeholder="Your phone number"></label></div><div class="field-row"><label>Town or city<input name="town" autocomplete="address-level2" maxlength="100" required placeholder="Your service location"></label><label>How can we help?<select name="service" required><option value="">Select a service</option>{''.join(f'<option>{s["name"]}</option>' for s in SERVICES)}<option>Something else</option></select></label></div><label>A few details<textarea name="details" maxlength="2000" required placeholder="Tell us about the issue or the project you have in mind."></textarea></label><button class="btn" type="submit">Prepare email request {icon('arrow')}</button><p class="form-note">Opens your email app; you review and send the request there. An appointment is confirmed only after you speak with our team. For urgent help, please call. <a href="/privacy/">Privacy details</a>.</p><p id="form-status" class="form-status" role="status" hidden></p><noscript><p class="no-js-note">Please call or <a href="mailto:contact@thegreatestplumber.com">email us directly</a> to arrange service.</p></noscript></form></div></div></section>'''
-def header():return f'''<a class="skip" href="#main">Skip to content</a><div class="utility"><div class="wrap"><span class="utility-region">YOUR CHICAGOLAND PLUMBER • OVER 50 YEARS OF EXPERIENCE</span><a href="tel:+17734711444"><span class="status-dot"></span>24/7 emergency help: (773) 471-1444 {icon('arrow')}</a></div></div><header class="site-header"><div class="wrap nav"><a class="brand" href="/" aria-label="Ed’s Plumbing and Sewer home"><img src="/assets/logo.webp" alt="Ed’s Plumbing & Sewer Inc." width="720" height="240"></a><button class="menu-toggle" aria-controls="navigation" aria-expanded="false" aria-label="Menu" type="button"><span class="menu-label">Menu</span><span aria-hidden="true">☰</span></button><nav class="nav-links" id="navigation" aria-label="Main navigation"><a href="/#services">Our services</a><a href="/about/">About Ed’s</a><a href="/#service-area">Service area</a></nav><a class="btn header-contact" href="/contact-us/#service-request" data-phone="tel:{OFFICE_NUMBERS[0][2]}">Contact us{icon('arrow')}</a></div></header>'''
-def footer():return f'''<footer class="site-footer compact-footer"><div class="wrap"><div class="compact-footer-row"><a class="footer-logo" href="/" aria-label="Ed’s Plumbing and Sewer home"><img src="/assets/logo.webp" alt="Ed’s Plumbing & Sewer Inc." width="720" height="240" loading="lazy"></a><div class="footer-information"><nav aria-label="Footer navigation"><a href="/residential-plumbing/">Residential</a><a href="/commercial-plumbing/">Commercial</a><a href="/home-repairs-remodeling/">Remodeling</a><a href="/about/">About Ed’s</a><a href="/contact-us/">Contact</a></nav><div class="footer-bottom"><span>© {date.today().year} Ed’s Plumbing & Sewer Inc. · <a href="/privacy/">Privacy</a> · <a href="/sitemap/">Sitemap</a></span></div></div><picture class="footer-flag"><source media="(prefers-reduced-motion: reduce)" srcset="/assets/footer-american-flag-still.webp"><img src="/assets/footer-american-flag.webp" alt="American flag" width="400" height="250" loading="lazy" decoding="async"></picture></div></div></footer><div class="mobile-bar mobile-office-bar">{emergencyphone("mobile")}{officephones("mobile")}</div>'''
-def schema(path,title,service=None,withfaq=False):
- b={'@context':'https://schema.org','@type':'Plumber','@id':BASE+'/#business','name':'Ed’s Plumbing & Sewer Inc.','url':BASE+'/','telephone':[number for label,display,number in OFFICE_NUMBERS],'contactPoint':[{'@type':'ContactPoint','name':label,'telephone':number,'contactType':'customer service'} for label,display,number in OFFICE_NUMBERS]+[{'@type':'ContactPoint','name':'24/7 emergency service','telephone':'+1-773-471-1444','contactType':'emergency'}],'email':'contact@thegreatestplumber.com','logo':BASE+'/assets/logo.webp','image':BASE+'/assets/kitchen-1200.webp','areaServed':[{'@type':'City','name':n+', Illinois'} for n in TOWNS],'hasOfferCatalog':{'@type':'OfferCatalog','name':'Plumbing and sewer services','itemListElement':[{'@type':'Offer','itemOffered':{'@type':'Service','name':s['name'],'url':BASE+'/'+s['slug']+'/'}} for s in SERVICES]}}
- items=[b]
- if path!='/':items.append({'@context':'https://schema.org','@type':'BreadcrumbList','itemListElement':[{'@type':'ListItem','position':1,'name':'Home','item':BASE+'/'},{'@type':'ListItem','position':2,'name':title,'item':BASE+path}]})
- if service:items.append({'@context':'https://schema.org','@type':'Service','name':service['name'],'description':service['desc'],'url':BASE+path,'provider':{'@id':BASE+'/#business'},'areaServed':b['areaServed']})
- if withfaq:items.append({'@context':'https://schema.org','@type':'FAQPage','mainEntity':[{'@type':'Question','name':q,'acceptedAnswer':{'@type':'Answer','text':a}} for q,a in FAQ]})
- return json.dumps(items,ensure_ascii=False).replace('</','<\\/')
-PAGES=[]
-def write(path,title,desc,content,service=None,withfaq=False,noindex=False):
- if 'class="emergency-banner"' not in content:content+=emergencybanner()
- file=D/('index.html' if path=='/' else path.strip('/')+'/index.html');file.parent.mkdir(parents=True,exist_ok=True)
- file.write_text(f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#103330"><meta name="robots" content="{'noindex,follow' if noindex else 'index,follow,max-image-preview:large'}"><link rel="canonical" href="{BASE+path}"><meta property="og:locale" content="en_US"><meta property="og:type" content="website"><meta property="og:site_name" content="Ed’s Plumbing &amp; Sewer Inc."><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{BASE+path}"><meta property="og:image" content="{BASE}/assets/kitchen-1200.webp"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="800"><meta property="og:image:alt" content="Bright kitchen with professional plumbing fixtures — illustrative interior"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{BASE}/assets/kitchen-1200.webp"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/site.css"><script src="/assets/site.js" defer></script><script type="application/ld+json">{schema(path,title,service,withfaq)}</script></head><body>{header()}<main id="main">{content}</main>{footer()}</body></html>''')
- if not noindex:PAGES.append(path)
-def pagehero(name,intro,img='bathroom-01',alt='Illustrative modern bathroom interior',media=None):
- return f'<section class="page-hero"><div class="wrap"><div class="breadcrumbs"><a href="/">Home</a> / {name}</div><div class="split"><div><p class="eyebrow">ED’S PLUMBING & SEWER</p><h1>{name}</h1><p>{intro}</p>{btn("Let’s talk about service","/contact-us/")}</div><div>{media if media is not None else image(img,alt,lazy=False)}</div></div></div></section>'
-def area():return f'''<section class="section area-section" id="service-area"><div class="wrap area-grid"><div class="area-copy"><p class="eyebrow">RIGHT HERE IN CHICAGOLAND</p><h2>Local service.<br>A whole region covered.</h2><p>From city neighborhoods to the suburbs, Ed’s serves homes and businesses across the metropolitan Chicago area.</p>{link('Ask about service in your area','tel:+16302020050')}</div><div><div class="area-list">{''.join(f'<span class="town">{t}</span>' for t in TOWNS)}</div><p class="area-note">Don’t see your city? Service is available throughout the metropolitan Chicago area as well as the surrounding Chicago suburbs.  Call with your address to confirm service and scheduling.</p></div></div></section>'''
-CATEGORIES=[
- ('Residential plumbing','Complete plumbing service for your home. Repairs, replacements and new installations.','residential-plumbing','bathroom-02','Illustrative bathroom with a double vanity, bathtub and shower'),
- ('Commercial plumbing','Plumbing and sewer solutions for businesses and industrial properties.','commercial-plumbing','commercial-restroom-v4','Illustrative commercial restroom with sinks and stalls'),
- ('Remodeling','From one room to a larger renovation. Let’s bring your next project to life.','home-repairs-remodeling','kitchen','Illustrative kitchen with white cabinets and an oak island')]
-def categorycards():
- return '<div class="category-grid">'+''.join(f'<a class="category-card" href="/{slug}/"><div class="category-image">{image(img,alt)}</div><div class="category-copy"><h3>{name}</h3><p>{desc}</p><span class="text-link">Explore {"remodeling" if name=="Remodeling" else "services"}{icon("arrow")}</span></div></a>' for name,desc,slug,img,alt in CATEGORIES)+'</div>'
-def emergencybanner():return f'''<section class="emergency-banner" id="emergency-service" aria-labelledby="emergency-heading"><div class="wrap emergency-banner-inner"><div class="emergency-banner-message"><span class="emergency-banner-icon">{icon('phone')}</span><div><h2 id="emergency-heading">Plumbing emergency?</h2><p>Available 24/7. Call our emergency line for urgent help.</p></div></div>{emergencyphone('banner')}</div></section>'''
-home=f'''{emergencybanner()}<section class="hero home-hero"><div class="wrap hero-grid"><div class="hero-copy"><p class="eyebrow">ED’S PLUMBING & SEWER · CHICAGOLAND</p><h1>Plumbing.<br>Remodeling.<br><em>Taken care of.</em></h1><p>Residential plumbing, commercial plumbing and remodeling. One experienced team for your home, your business and your next project.</p><div class="button-row">{btn('Call (630) 202-0050','tel:+16302020050',phone=True)}</div><div class="hero-note">{icon('shield')}50+ years of experience · Licensed, bonded & insured</div></div><figure class="hero-image">{image('bathroom-01','Illustrative bathroom with a wood vanity, glass shower and freestanding bathtub',lazy=False)}</figure></div></section><section class="section wrap home-services" id="services"><div class="section-top"><div><p class="eyebrow">WHAT WE DO</p><h2>One team. Every space.</h2></div></div>{categorycards()}</section>{area()}'''
-write('/','Chicagoland Plumbing & Remodeling | Ed’s Plumbing & Sewer','Residential plumbing, commercial plumbing and remodeling throughout Chicagoland. Over 50 years of experience. Call Chicagoland at (630) 202-0050.',home)
-residential_intro='From an everyday repair to a new installation, Ed’s takes care of residential plumbing throughout Chicagoland. Explore the services below or call to discuss what your home needs.'
-residential_content=pagehero('Residential plumbing',residential_intro,'bathroom-02','Illustrative home bathroom with a bathtub and double vanity')+'<section class="section wrap"><p class="eyebrow">COMPLETE CARE FOR YOUR HOME</p><h2>All your plumbing, covered.</h2><div class="service-grid">'+''.join(f'<a class="service-card" href="/{x["slug"]}/">{icon(x["icon"],"service-icon")}<h3>{x["name"]}</h3><p>{x["desc"]}</p><span class="text-link">Explore service{icon("arrow")}</span></a>' for x in SERVICES if x['slug'] not in ('commercial-plumbing','home-repairs-remodeling'))+'</div></section>'+emergency()
-write('/residential-plumbing/','Residential Plumbing Services in Chicagoland | Ed’s','Complete residential plumbing in Chicagoland: repairs, drains, sewers, water heaters, sump pumps, fixtures and installations. Call (630) 202-0050.',residential_content)
-for s in SERVICES:
- content=pagehero(s['name'],s['intro'],s['image'],s['alt'])+f'''<section class="section service-detail-section"><div class="wrap detail-grid"><article class="page-content"><p class="eyebrow">{s['short']}</p><h2>{s['heading']}</h2><p>{s['body']}</p><ul class="benefits">{''.join(f'<li>{t}</li>' for t in s['items'])}</ul><h2>{s['extra']}</h2><p>{s['extra_body']}</p><h2>Clear pricing. A clear next step.</h2><p>Call to discuss your project and arrange a visit. Ed’s offers flat-rate pricing, with a dispatch fee credited toward the work. The team explains proposed repairs and costs before you give approval.</p></article><aside class="detail-aside"><p class="eyebrow">WE’RE HERE TO HELP</p><h2>Let’s get it<br>taken care of.</h2><p>Call to discuss the problem, pricing and an appointment.</p>{btn('(630) 202-0050','tel:+16302020050',phone=True)}<p class="area-note">Urgent plumbing problem?<br>24/7 emergency: {emergencyphone()}</p><hr><p class="mini-label">RELATED SERVICES</p>{''.join(f'<p>{link(x["name"],"/"+x["slug"]+"/")}</p>' for x in SERVICES[:4] if x!=s)}</aside></div></section>'''+area()+emergency()
- write('/'+s['slug']+'/',s['title']+' | Ed’s',s['desc']+' Serving Chicago and the suburbs. Call (630) 202-0050.',content,service=s)
-write('/services/','Plumbing & Sewer Services in Chicagoland | Ed’s','Explore residential plumbing, commercial plumbing, remodeling and detailed services from Ed’s throughout Chicagoland.',pagehero('Help for every part<br>of your plumbing.','Repairs, replacements and new installations for homes and businesses throughout Chicagoland.','bathroom-01')+'<section class="section wrap">'+cards(True)+'</section>'+emergency())
-write('/service-area/','Chicagoland Plumbing Service Area | Ed’s Plumbing & Sewer','Serving metropolitan Chicago, Hinsdale, Naperville, Bolingbrook, Joliet, Orland Park, Darien and surrounding communities. Call our team to arrange service.',pagehero('Your local plumber.<br>Across Chicagoland.','Ed’s serves residential, commercial and industrial customers throughout the metropolitan Chicago area.','kitchen','Illustrative bright kitchen interior')+area()+contact())
-write('/contact-us/','Contact Ed’s Plumbing & Sewer | Service & Emergency Calls','Chicagoland: (630) 202-0050. For 24/7 emergencies call our emergency line: (773) 471-1444.',contact().replace('<h2>A real person.<br>A practical solution.</h2>','<h1>A real person.<br>A practical solution.</h1>')+'<section class="section wrap faq-grid" id="faq"><div><p class="eyebrow">BEFORE YOUR VISIT</p><h2>Helpful details.</h2><p>Scheduling, pricing and payments.</p></div>'+faq()+'</section>'+emergency(),withfaq=True)
-about_video='<div class="about-video"><iframe src="https://player.vimeo.com/video/792992602?h=dc1bbd5ba8&amp;autoplay=0&amp;title=0&amp;portrait=0&amp;byline=0&amp;badge=0" width="1280" height="720" title="Ed’s Plumbing & Sewer — About us video" loading="lazy" allow="fullscreen; picture-in-picture; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div><p class="video-fallback"><a href="https://player.vimeo.com/video/792992602?h=dc1bbd5ba8&amp;autoplay=0&amp;title=0&amp;portrait=0&amp;byline=0&amp;badge=0" target="_blank" rel="noopener noreferrer">Open video in a new tab ↗</a></p>'
-write('/about/','About Ed’s Plumbing & Sewer | 50+ Years in Chicagoland','Learn about Ed’s Plumbing & Sewer: over 50 years of experience, licensed, bonded and insured service, trained technicians and flat-rate pricing.',pagehero('Real experience.<br>Personal attention.','Ed’s Plumbing & Sewer brings more than 50 years of experience to residential, commercial and industrial plumbing throughout Chicagoland.','bathroom-01',media=about_video)+'''<section class="section wrap split"><div class="split-copy"><p class="eyebrow">THE WAY WE WORK</p><h2>Care for your home.<br>Clarity for you.</h2><p>Ed’s combines plumbing and sewer experience with a practical, personal approach. Our uniformed, trained technicians explain the work and take care to leave your space clean.</p><ul class="benefits"><li>Licensed, bonded and insured</li><li>Residential, commercial and industrial service</li><li>Flat-rate pricing and extended service hours</li><li>24-hour emergency plumbing and sewer service</li></ul>'''+link('Explore our services','/services/')+'</div><figure class="photo">'+image('bathroom-02','Illustrative bathroom interior with bathtub and vanity')+'<figcaption>Interior inspiration. Stock image.</figcaption></figure></section>'+emergency())
-write('/privacy/','Privacy | Ed’s Plumbing & Sewer','How contact inquiries work on this static Ed’s Plumbing & Sewer website.',pagehero('Your privacy.','A straightforward explanation of this website’s contact options.','kitchen')+'''<article class="section wrap privacy-content"><h2>Contact inquiries</h2><p>The service inquiry form prepares an email in your own email application. It does not submit or store information on this website. You choose whether to send the email, and your email provider handles that transmission.</p><p>Information you email or provide by phone is received by Ed’s to respond to your inquiry and arrange service. Avoid including payment card information in an email request.</p><h2>Cookies and analytics</h2><p>This static website includes no advertising trackers, analytics scripts or optional cookies in its own code. The hosting provider may process connection information needed to serve the website or provide access to a private preview.</p><h2>Embedded video</h2><p>The About page includes a Vimeo video player. Loading or playing the video connects to Vimeo, which may process connection information and use cookies for its player. See <a href="https://vimeo.com/privacy" target="_blank" rel="noopener noreferrer">Vimeo’s privacy policy</a> for details.</p><h2>Questions</h2><p>Contact <a href="mailto:contact@thegreatestplumber.com">contact@thegreatestplumber.com</a> with questions about an inquiry.</p></article>''')
-write('/sitemap/','Website Sitemap | Ed’s Plumbing & Sewer','Find all Ed’s Plumbing & Sewer pages and services.', '<section class="section wrap"><p class="eyebrow">FIND YOUR WAY</p><h1>Website sitemap</h1><ul class="benefits">'+''.join(f'<li><a href="{p}">{"Home" if p=="/" else p.strip("/").replace("-"," ").title()}</a></li>' for p in PAGES)+'</ul></section>')
-build_logo_review(D)
-# A real 404 document, served with status 404 by the host.
-(D/'404.html').write_text(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Page not found | Ed’s Plumbing</title><link rel="stylesheet" href="/assets/site.css"></head><body><main class="not-found"><p class="eyebrow">404 · PAGE NOT FOUND</p><h1>Let’s get you<br>back on track.</h1><p>The page you’re looking for isn’t here.</p>{btn("Go to the homepage","/")} {btn("Call Chicagoland","tel:+16302020050",secondary=True)}</main>{emergencybanner()}</body></html>')
-(D/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{BASE+p}</loc></url>' for p in PAGES)+'</urlset>')
-(D/'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
-(D/'favicon.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#103330"/><path d="M18 14h30v8H27v8h17v8H27v8h21v8H18Z" fill="#fff"/></svg>')
-redirects={'fixturereplace.shtml':'/home-repairs-remodeling/','applianceinstallations.shtml':'/utility-rooms/','videos.shtml':'/services/','index.shtml':'/','sewerbackups.shtml':'/drain-sewer-cleaning/','drainproblems.shtml':'/drain-sewer-cleaning/','waterpressure.shtml':'/plumbing-repairs/','waterheaters.shtml':'/water-heaters/','tanklesswaterheaters.shtml':'/water-heaters/','leaks.shtml':'/plumbing-repairs/','sumppump.shtml':'/sump-pumps/','commercialIndustrial.shtml':'/commercial-plumbing/','utilityrooms.shtml':'/utility-rooms/','fixtures.shtml':'/home-repairs-remodeling/','appliancehookups.shtml':'/utility-rooms/','majorinstallations.shtml':'/home-repairs-remodeling/','furnacesHVAC.shtml':'/heating-cooling/','appointments.shtml':'/contact-us/','schedule.shtml':'/contact-us/','servicearea.shtml':'/service-area/','payments.shtml':'/contact-us/#faq','contactus.shtml':'/contact-us/','employees.shtml':'/about/','licenses.shtml':'/about/','references.shtml':'/about/','whydig.shtml':'/drain-sewer-cleaning/','sitemap.shtml':'/sitemap/'}
-(D/'_redirects').write_text('\n'.join(f'/{k} {v} 301' for k,v in redirects.items())+'\n')
-(D/'.htaccess').write_text('DirectoryIndex index.html\nErrorDocument 404 /404.html\n'+''.join(f'Redirect 301 /{k} {v}\n' for k,v in redirects.items()))
-# Portable fallback for hosts that do not support native redirect configuration.
-for old,new in redirects.items():
- (D/old).write_text(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,follow"><meta http-equiv="refresh" content="0;url={new}"><link rel="canonical" href="{BASE+new}"><title>Page moved | Ed’s Plumbing</title></head><body><p>This page has moved. <a href="{new}">Continue to Ed’s Plumbing &amp; Sewer</a>.</p></body></html>')
-# Serve generated static files directly when publishing /docs with GitHub Pages.
-(D/'.nojekyll').touch()
-print(f'Generated {len(PAGES)} content pages, 404, sitemap, robots and {len(redirects)} legacy URL mappings.')
+import re
+from html.parser import HTMLParser
+import xml.etree.ElementTree as ET
+
+from scripts.html_format import pretty_html
+
+
+ROOT = Path(__file__).resolve().parent
+SOURCE = ROOT / 'src'
+OUTPUT = ROOT / 'docs'
+INCLUDE = re.compile(r'''{%\s*include\s+["']([^"']+)["']\s*%}''')
+
+
+def expand_includes(text, partials, stack=()):
+    def replace(match):
+        name = match.group(1)
+        path = (partials / name).resolve()
+        if not path.is_relative_to(partials.resolve()) or path.suffix != '.html':
+            raise ValueError(f'Invalid partial path: {name}')
+        if path in stack:
+            raise ValueError(f'Circular partial include: {name}')
+        if not path.is_file():
+            raise ValueError(f'Missing partial: {name}')
+        return expand_includes(path.read_text(), partials, (*stack, path)).strip()
+
+    return INCLUDE.sub(replace, text)
+
+
+class PageMetadata(HTMLParser):
+    def __init__(self, text):
+        super().__init__()
+        self.canonical = None
+        self.noindex = False
+        self.feed(text)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == 'link' and attrs.get('rel') == 'canonical':
+            self.canonical = attrs.get('href')
+        if tag == 'meta' and attrs.get('name') == 'robots':
+            self.noindex = 'noindex' in attrs.get('content', '').lower()
+
+
+def sitemap(urls):
+    namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9'
+    ET.register_namespace('', namespace)
+    tree = ET.Element(f'{{{namespace}}}urlset')
+    for address in urls:
+        item = ET.SubElement(tree, f'{{{namespace}}}url')
+        ET.SubElement(item, f'{{{namespace}}}loc').text = address
+    ET.indent(tree, space='  ')
+    return ET.tostring(tree, encoding='utf-8', xml_declaration=True) + b'\n'
+
+
+def sha256(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def build_site(source=SOURCE, output=OUTPUT):
+    source, output = Path(source).resolve(), Path(output).resolve()
+    if output == source or output.is_relative_to(source) or source.is_relative_to(output):
+        raise ValueError('Build output must be separate from the source folder.')
+    pages = source / 'pages'
+    if not (pages / 'index.html').is_file():
+        raise ValueError('Missing src/pages/index.html.')
+    files = {}
+    for asset in sorted((source / 'static').rglob('*')):
+        if asset.is_file():
+            if asset.is_symlink():
+                raise ValueError(f'Static asset cannot be a symbolic link: {asset}')
+            files[asset.relative_to(source / 'static').as_posix()] = asset.read_bytes()
+    urls = []
+    count = 0
+    for page in sorted(pages.rglob('*')):
+        if not page.is_file() or page.suffix not in ('.html', '.shtml'):
+            continue
+        if page.is_symlink():
+            raise ValueError(f'Page cannot be a symbolic link: {page}')
+        relative = page.relative_to(pages).as_posix()
+        if relative in files:
+            raise ValueError(f'Page and static asset have the same output path: {relative}')
+        html = pretty_html(expand_includes(page.read_text(), source / 'partials'))
+        files[relative] = html.encode()
+        meta = PageMetadata(html)
+        if page.suffix == '.html':
+            count += 1
+            if not meta.noindex:
+                if not meta.canonical:
+                    raise ValueError(f'Indexable page is missing its canonical URL: {relative}')
+                urls.append(meta.canonical)
+    if len(urls) != len(set(urls)):
+        raise ValueError('Indexable pages must have unique canonical URLs.')
+    if 'sitemap.xml' in files:
+        raise ValueError('sitemap.xml is generated from page metadata; remove it from src/static.')
+    files['sitemap.xml'] = sitemap(urls)
+    files.setdefault('.nojekyll', b'')
+    state_path = output.parent / ('build-manifest.json' if output.name == 'docs' else f'.{output.name}-build-state.json')
+    previous = {}
+    if state_path.is_file():
+        state = json.loads(state_path.read_text())
+        previous = state.get('files', {})
+    edited = []
+    for name, expected in previous.items():
+        path = output / name
+        if not path.is_file():
+            edited.append(name)
+            continue
+        current = path.read_bytes()
+        if sha256(current) != expected:
+            captured_in_source = current == files.get(name)
+            if not captured_in_source and path.suffix in ('.html', '.shtml') and name in files:
+                captured_in_source = pretty_html(current.decode()).encode() == files[name]
+            if not captured_in_source:
+                edited.append(name)
+    if edited:
+        raise ValueError('Generated files were edited directly: ' + ', '.join(edited) + '. Move those edits into src/pages, src/partials or src/static before rebuilding. No output was changed.')
+    for name in files:
+        destination = output / name
+        if destination.is_symlink() or any(parent.is_symlink() for parent in destination.parents if parent != output.parent):
+            raise ValueError(f'Output cannot contain symbolic links: {destination}')
+    for name, content in files.items():
+        destination = output / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if not destination.is_file() or destination.read_bytes() != content:
+            destination.write_bytes(content)
+    for name in previous.keys() - files.keys():
+        (output / name).unlink()
+    state = {'files': {name: sha256(content) for name, content in files.items()}}
+    state_path.write_text(json.dumps(state, indent=2) + '\n')
+    return count, len(urls), len(files)
+
+
+def main():
+    parser = ArgumentParser(description='Build pretty-printed website files from editable HTML sources.')
+    parser.add_argument('--output', type=Path, default=OUTPUT, help='Output folder; defaults to docs/.')
+    args = parser.parse_args()
+    try:
+        pages, urls, files = build_site(output=args.output)
+    except (ValueError, OSError, json.JSONDecodeError) as error:
+        parser.exit(1, f'Build failed: {error}\n')
+    print(f'Built {pages} HTML pages, {urls} sitemap URLs and {files} files in {args.output}.')
+
+
+if __name__ == '__main__':
+    main()

@@ -22,8 +22,9 @@ for path,soup in docs.items():
  rel=path.relative_to(root)
  if path.name=='404.html':continue
  count+=1
- assert len(soup.all('h1'))==1,f'{rel}: expected one H1'
  meta={t.get('name'):t.get('content') for t in soup.all('meta')}
+ h1_count=len(soup.all('h1'))
+ assert h1_count<=1 if 'noindex' in meta.get('robots','') else h1_count==1,f'{rel}: expected one H1 on indexable pages and at most one on noindex pages'
  titles.append(soup.title);descriptions.append(meta['description'])
  assert soup.all('html')[0].get('lang')=='en'
  canonical=next(a['href'] for a in soup.all('link') if a.get('rel')=='canonical')
